@@ -1,0 +1,10 @@
+<%- include("partials/header.ejs") %>
+
+<div class="container col-lg-10 mt-4 py-3">
+    
+    <h2 class=""><%= post.title %></h2>
+    <p class="lead text-body-primary">Author: <%= post.author %></p>
+    <p class="lead text-body-primary" style="white-space: pre-wrap;"><%- post.text %></p>
+</div>
+
+<%- include("partials/footer.ejs") %>

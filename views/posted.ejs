@@ -1,0 +1,14 @@
+<%- include("partials/header.ejs") %>
+
+<div class="col-lg-10 col-md-8 mx-auto g-3 py-5">
+    <h4 class="fw-light">Recently Posted</h4>
+    <% const latestPost = postsArray[postsArray.length - 1]; %>
+    <div class="post-container">
+        <h2 class=""><%= latestPost.title %></h2>
+        <p class="lead text-body-secondary">Author: <%= latestPost.author %></p>
+        <p class="lead text-body-secondary" style="white-space: pre-wrap;"><%- latestPost.text %></p>
+    </div>
+</div>
+
+
+<%- include("partials/footer.ejs") %>
