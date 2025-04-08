@@ -1,0 +1,14 @@
+<%- include("partials/header.ejs") %>
+
+<h1>Edit Post</h1>
+<form action="/edit-post/<%= post.id %>" method="POST">
+    <label for="title">Title:</label><br>
+    <input type="text" id="title" name="title" value="<%= post.title %>"><br>
+    <label for="author">Author:</label><br>
+    <input type="text" id="author" name="author" value="<%= post.author %>"><br>
+    <label for="post-text">Post Text:</label><br>
+    <textarea id="post-text" name="post-text" rows="4" cols="50"><%= post.text %></textarea><br>
+    <button type="submit">Update Post</button>
+</form>
+
+<%- include("partials/footer.ejs") %>

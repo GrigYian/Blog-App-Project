@@ -65,9 +65,10 @@ app.post("/submit-post", upload.single("file"), (req, res) => {
     const postAuthor = req.body["author"].trim();
     const postText = req.body["post-text"];
     const postImage = req.file;
+    const id = Date.now().toString() + Math.random().toString(36).substr(2, 9);
 
     // Store the post in the array
-    const newPost = { title: postTitle, author: postAuthor, text: postText, image: postImage };
+    const newPost = { id: id, title: postTitle, author: postAuthor, text: postText, image: postImage };
     postsArray.push(newPost);
 
     console.log("Posts Array:", postsArray); // Log the posts array
@@ -81,31 +82,65 @@ app.get("/posted", (req, res) => {
 });
 
 app.get("/:title", (req, res) => {
-    const requestedTitle = req.params.title;
-    // const requestedAuthor = req.params.author;
+  const requestedTitle = req.params.title.toLowerCase();
+  const requestedPost = postsArray.find(post => 
+      post.title.toLowerCase().replace(/\s+/g, '-') === requestedTitle
+  );
 
-    console.log("Requested Title:", requestedTitle);
-    // console.log("Requested Author:", requestedAuthor);
-
-    // Find the post in the array based on title and author
-    const requestedPost = postsArray.find(post => (
-        post.title.toLowerCase().replace(/\s+/g, '-') === requestedTitle.toLowerCase() 
-        // && post.author.toLowerCase() === requestedAuthor.toLowerCase()
-      ));
-      
-
-    console.log("Requested Post:", requestedPost);
-
-    if (requestedPost) {
-        res.render("view-post.ejs", { post: requestedPost });
-    } else {
-        // Handle post not found
-        res.status(404).send("Post not found");
-    }
+  console.log("Requested Post:", requestedPost);
+  if (requestedPost) {
+      res.render("view-post.ejs", { post: requestedPost });
+  } else {
+      res.status(404).send("Post not found");
+  }  
 });
 
+// Edit Post Route
+app.get("/edit-post/:postId", (req, res) => {
+  const postId = req.params.postId;
+  // Find the post by postId from your data storage
+  const post = postsArray.find(post => post.id === postId);
+  if (!post) {
+      return res.status(404).send("Post not found");    
+  }
+  res.render("edit-post.ejs", { post });
+});
+
+
+app.post("/edit-post/:postId", (req, res) => {
+  const postId = req.params.postId;
+
+  const postIndex = postsArray.findIndex(post => post.id === postId);
+  if (postIndex === -1) {
+      return res.status(404).send("Post not found");
+  }
+
+  const existingPost = postsArray[postIndex];
+  postsArray[postIndex] = {
+      ...existingPost,
+      title: req.body.title,
+      author: req.body.author,
+      text: req.body["post-text"]
+  };
+
+  res.redirect("/posts");
+});
+
+// Delete Post Route
+app.get("/delete-post/:postId", (req, res) => {
+  const postId = req.params.postId;
+  // Find the index of the post by postId from data storage
+  const postIndex = postsArray.findIndex(post => post.id === postId);
+  if (postIndex === -1) {
+    return res.status(404).send("Post not found");
+  }
+  // Remove the post from the postsArray
+  postsArray.splice(postIndex, 1);
+  res.redirect("/posts");
+});
 
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
+
