@@ -127,7 +127,7 @@ app.post("/edit-post/:postId", (req, res) => {
 });
 
 // Delete Post Route
-app.get("/delete-post/:postId", (req, res) => {
+app.delete("/delete-post/:postId", (req, res) => {
   const postId = req.params.postId;
   // Find the index of the post by postId from data storage
   const postIndex = postsArray.findIndex(post => post.id === postId);
@@ -136,7 +136,8 @@ app.get("/delete-post/:postId", (req, res) => {
   }
   // Remove the post from the postsArray
   postsArray.splice(postIndex, 1);
-  res.redirect("/posts");
+  res.status(200).json({ message: "Deleted", redirect: "/posts" });
+  
 });
 
 
